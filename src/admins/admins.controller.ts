@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -22,8 +24,14 @@ export class AdminsController {
   }
 
   @Get()
-  findAll() {
-    return this.adminsService.findAll();
+  findAll(
+    @Body('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Body('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+  ) {
+    return this.adminsService.findAll({
+      page,
+      limit,
+    });
   }
 
   @Get(':id')

@@ -1,9 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Admin } from './entities/admin.entity';
+
+import {
+  Pagination,
+  IPaginationOptions,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AdminsService {
@@ -12,13 +19,20 @@ export class AdminsService {
     private adminRepository: Repository<Admin>,
   ) {}
 
-  create(createAdminDto: CreateAdminDto) {
+  async create(createAdminDto: CreateAdminDto) {
+    const salt = await bcrypt.genSalt();
+
+    createAdminDto.password = await bcrypt.hash(createAdminDto.password, salt);
+
     const admin = this.adminRepository.create(createAdminDto);
     return this.adminRepository.save(admin);
   }
 
-  findAll() {
-    return this.adminRepository.find();
+  async findAll(options: IPaginationOptions): Promise<Pagination<Admin>> {
+    const query = this.adminRepository.createQueryBuilder('admin');
+    query.orderBy('admin.username', 'ASC');
+
+    return paginate(query, options);
   }
 
   async findOne(id: string) {
@@ -37,6 +51,10 @@ export class AdminsService {
     if (!adminExists) {
       throw new HttpException('admin não encontrado', HttpStatus.NOT_FOUND);
     }
+
+    const salt = await bcrypt.genSalt();
+
+    updateAdminDto.password = await bcrypt.hash(updateAdminDto.password, salt);
 
     return this.adminRepository.update(id, {
       ...updateAdminDto,

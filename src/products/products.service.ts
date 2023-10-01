@@ -8,6 +8,12 @@ import { Admin } from 'src/admins/entities/admin.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import {
+  paginate,
+  IPaginationOptions,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -43,8 +49,10 @@ export class ProductsService {
     return this.productRepository.save(product);
   }
 
-  findAll() {
-    return this.productRepository.find();
+  async findAll(options: IPaginationOptions): Promise<Pagination<Product>> {
+    const query = this.productRepository.createQueryBuilder('product');
+    query.orderBy('product.name', 'ASC');
+    return paginate<Product>(query, options);
   }
 
   async findOne(id: string) {
