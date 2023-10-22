@@ -40,6 +40,36 @@ export class ProductsController {
     return this.productsService.findOne(id);
   }
 
+  @Get('searchProducts/:name_product')
+  findBySearch(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+    @Param('name_product') search: string,
+  ) {
+    return this.productsService.findBySearch(
+      {
+        page,
+        limit,
+      },
+      search,
+    );
+  }
+
+  @Get('findByCategory/:categoryId')
+  findByCategory(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 20,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productsService.findByCategory(
+      {
+        page,
+        limit,
+      },
+      categoryId,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,

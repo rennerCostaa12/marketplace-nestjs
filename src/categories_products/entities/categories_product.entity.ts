@@ -32,5 +32,5 @@ export class CategoriesProduct {
   admin: Admin;
 
   @OneToMany(() => Product, (product) => product.categories)
-  products: Product;
+  products: Product[];
 }

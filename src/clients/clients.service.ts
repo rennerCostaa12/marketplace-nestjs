@@ -23,6 +23,17 @@ export class ClientsService {
   async create(createClientDto: CreateClientDto) {
     const salt = await bcrypt.genSalt();
 
+    const user = await this.clientRepository.findOneBy({
+      email: createClientDto.email,
+    });
+
+    if (user) {
+      throw new HttpException(
+        'Já existe um cliente com este email. Por favor escolha outro',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     createClientDto.password = await bcrypt.hash(
       createClientDto.password,
       salt,
@@ -57,10 +68,12 @@ export class ClientsService {
 
     const salt = await bcrypt.genSalt();
 
-    updateClientDto.password = await bcrypt.hash(
-      updateClientDto.password,
-      salt,
-    );
+    if (updateClientDto.password) {
+      updateClientDto.password = await bcrypt.hash(
+        updateClientDto.password,
+        salt,
+      );
+    }
 
     return this.clientRepository.update(id, {
       ...updateClientDto,

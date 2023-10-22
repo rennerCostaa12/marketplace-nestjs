@@ -21,6 +21,9 @@ export class Client {
   @Column()
   address: string;
 
+  @Column({ nullable: true })
+  complement_address: string;
+
   @OneToMany(() => Sale, (sale) => sale.client)
   shopping: Sale[];
 

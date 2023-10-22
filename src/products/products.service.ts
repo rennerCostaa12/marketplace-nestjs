@@ -51,6 +51,7 @@ export class ProductsService {
 
   async findAll(options: IPaginationOptions): Promise<Pagination<Product>> {
     const query = this.productRepository.createQueryBuilder('product');
+    query.leftJoinAndSelect('product.categories', 'categories_product');
     query.orderBy('product.name', 'ASC');
     return paginate<Product>(query, options);
   }
@@ -63,6 +64,25 @@ export class ProductsService {
     }
 
     return product;
+  }
+
+  async findBySearch(options: IPaginationOptions, nameProduct: string) {
+    const query = this.productRepository.createQueryBuilder('product');
+    query.leftJoinAndSelect('product.categories', 'categories_product');
+    query.where('product.name LIKE :name', { name: `%${nameProduct}%` });
+
+    return paginate<Product>(query, options);
+  }
+
+  async findByCategory(options: IPaginationOptions, categoryId: number) {
+    const query = this.productRepository.createQueryBuilder('product');
+    query.leftJoinAndSelect('product.categories', 'categories_product');
+    query.where('product.categoriesId = :categoriesId', {
+      categoriesId: categoryId,
+    });
+    query.orderBy('product.name', 'ASC');
+
+    return paginate<Product>(query, options);
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {

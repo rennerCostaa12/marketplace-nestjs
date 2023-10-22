@@ -69,15 +69,21 @@ export class AuthService {
       id: client.id,
       username: client.username,
       email: client.email,
+      profile_img: client.profile_img,
+      address: client.address,
+      complement: client.complement_address,
     };
 
-    return {
+    const objectUser = {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '7 days',
         subject: String(client.id),
         audience: 'client',
       }),
+      user: payload,
     };
+
+    return objectUser;
   }
 
   registerAdmin(datasAdmin: CreateAdminDto) {
@@ -95,7 +101,7 @@ export class AuthService {
       audience: 'admin',
     });
   }
-  SECRET_AUTH;
+
   checkToken(token: string) {
     const datas = this.jwtService.verifyAsync(token, {
       audience: 'admin',

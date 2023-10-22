@@ -16,7 +16,7 @@ export class CreateClientDto {
   username: string;
 
   @IsEmail()
-  @IsNotEmpty({ message: 'O campo email é obrigatóri0' })
+  @IsNotEmpty({ message: 'O campo email é obrigatório' })
   email: string;
 
   @IsString({ message: 'O campo password é do tipo string' })
@@ -33,4 +33,8 @@ export class CreateClientDto {
   @IsString({ message: 'O campo address é do tipo string' })
   @IsNotEmpty({ message: 'O campo address é obrigatório' })
   address: string;
+
+  @IsString({ message: 'O campo complement_address é do tipo string' })
+  @IsOptional()
+  complement_address: string | null;
 }
