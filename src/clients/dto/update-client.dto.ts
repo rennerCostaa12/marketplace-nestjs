@@ -4,6 +4,7 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 
 export class UpdateClientDto {
@@ -17,6 +18,10 @@ export class UpdateClientDto {
   @IsEmail()
   @IsOptional()
   email: string | null;
+
+  @IsString({ message: 'O campo telefone é do tipo string' })
+  @IsOptional()
+  phone: string | null;
 
   @IsString({ message: 'O campo password é do tipo string' })
   @MinLength(7, {
@@ -32,6 +37,10 @@ export class UpdateClientDto {
   @IsString({ message: 'O campo address é do tipo string' })
   @IsOptional()
   address: string | null;
+
+  @IsNumber()
+  @IsOptional()
+  number_address: number | null;
 
   @IsString({ message: 'O campo complement_address é do tipo string' })
   @IsOptional()

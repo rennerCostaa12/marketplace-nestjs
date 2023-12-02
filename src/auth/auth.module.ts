@@ -11,7 +11,7 @@ import { Client } from 'src/clients/entities/client.entity';
     TypeOrmModule.forFeature([Admin, Client]),
     JwtModule.register({
       global: true,
-      secret: process.env.SECRET_AUTH,
+      secret: 'VBqUX~23c{EW7g}XWxBKj&MKf#}wMbT',
     }),
   ],
   controllers: [AuthController],

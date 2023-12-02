@@ -9,8 +9,11 @@ export class Client {
   @Column({ length: 150 })
   username: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   email: string;
+
+  @Column({ unique: true })
+  phone: string;
 
   @Column()
   password: string;
@@ -20,6 +23,9 @@ export class Client {
 
   @Column()
   address: string;
+
+  @Column()
+  number_address: number;
 
   @Column({ nullable: true })
   complement_address: string;

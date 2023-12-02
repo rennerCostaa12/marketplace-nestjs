@@ -5,6 +5,7 @@ import {
   MaxLength,
   MinLength,
   IsOptional,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateClientDto {
@@ -16,8 +17,12 @@ export class CreateClientDto {
   username: string;
 
   @IsEmail()
-  @IsNotEmpty({ message: 'O campo email é obrigatório' })
+  @IsOptional()
   email: string;
+
+  @IsString({ message: 'O campo telefone é do tipo string' })
+  @IsNotEmpty({ message: 'O campo telefone é obrigatório' })
+  phone: string;
 
   @IsString({ message: 'O campo password é do tipo string' })
   @IsNotEmpty({ message: 'O campo password é obrigatório' })
@@ -33,6 +38,10 @@ export class CreateClientDto {
   @IsString({ message: 'O campo address é do tipo string' })
   @IsNotEmpty({ message: 'O campo address é obrigatório' })
   address: string;
+
+  @IsNumber()
+  @IsNotEmpty({ message: 'O campo número é obrigatório' })
+  number_address: number;
 
   @IsString({ message: 'O campo complement_address é do tipo string' })
   @IsOptional()

@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from 'src/admins/entities/admin.entity';
 import { Client } from 'src/clients/entities/client.entity';
 import { Repository } from 'typeorm';
+import { LoginClientDto } from './dto/login-client.dto';
 
 @Injectable()
 export class AuthService {
@@ -52,26 +53,33 @@ export class AuthService {
     };
   }
 
-  async signInClient(loginData: LoginDto): Promise<any> {
-    const { email, password } = loginData;
+  async signInClient(loginData: LoginClientDto): Promise<any> {
+    const { phone, password } = loginData;
 
-    const client = await this.clientService.findOneBy({ email });
+    const client = await this.clientService.findOneBy({ phone });
 
     if (!client) {
-      throw new HttpException('Email/Senha inválida!', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Telefone/Senha inválida!',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (!(await this.comparePassword(password, client.password))) {
-      throw new HttpException('Email/Senha inválida!', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Telefone/Senha inválida!',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const payload = {
       id: client.id,
       username: client.username,
-      email: client.email,
+      phone: client.phone,
       profile_img: client.profile_img,
       address: client.address,
       complement: client.complement_address,
+      number_address: client.number_address,
     };
 
     const objectUser = {
@@ -105,7 +113,7 @@ export class AuthService {
   checkToken(token: string) {
     const datas = this.jwtService.verifyAsync(token, {
       audience: 'admin',
-      secret: process.env.SECRET_AUTH,
+      secret: 'VBqUX~23c{EW7g}XWxBKj&MKf#}wMbT',
     });
 
     return datas;

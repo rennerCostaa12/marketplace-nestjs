@@ -13,7 +13,16 @@ export class SalesService {
     private salesRepository: Repository<Sale>,
   ) {}
 
-  create(createSaleDto: CreateSaleDto) {
+  async create(createSaleDto: CreateSaleDto) {
+    const { payments, change_money } = createSaleDto;
+
+    if (payments === 1 && change_money === null) {
+      throw new HttpException(
+        'O valor do troco não pode ser nulo',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const sale = this.salesRepository.create(createSaleDto);
     return this.salesRepository.save(sale);
   }

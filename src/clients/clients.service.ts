@@ -24,12 +24,12 @@ export class ClientsService {
     const salt = await bcrypt.genSalt();
 
     const user = await this.clientRepository.findOneBy({
-      email: createClientDto.email,
+      phone: createClientDto.phone,
     });
 
     if (user) {
       throw new HttpException(
-        'Já existe um cliente com este email. Por favor escolha outro',
+        'Já existe um cliente com este telefone. Por favor escolha outro',
         HttpStatus.BAD_REQUEST,
       );
     }
