@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
@@ -25,9 +26,14 @@ export class SalesController {
     return this.salesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('findone/:id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.salesService.findOne(id);
+  }
+
+  @Get('findbyclient/:uuid')
+  findByClient(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.salesService.findByClient(uuid);
   }
 
   @Patch(':id')

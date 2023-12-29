@@ -31,8 +31,37 @@ export class SalesService {
     return this.salesRepository.find();
   }
 
+  async findByClient(uuid: string) {
+    const query = this.salesRepository.createQueryBuilder('sales');
+    query.where('sales.clientId = :clientId', {
+      clientId: uuid,
+    });
+    query.leftJoinAndSelect('sales.status', 'status');
+
+    return query.execute();
+  }
+
   findOne(id: string) {
-    return this.salesRepository.findOneBy({ id });
+    const isExistsSales = this.salesRepository.findOneBy({ id });
+
+    if (!isExistsSales) {
+      throw new HttpException(
+        'Este registro de venda não foi encontrado',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const querySales = this.salesRepository.createQueryBuilder('sales');
+    querySales
+      .where('sales.id = :id', {
+        id,
+      })
+      .getOne();
+    querySales.innerJoinAndSelect('sales.status', 'status');
+    querySales.innerJoinAndSelect('sales.delivery', 'delivery');
+    querySales.innerJoinAndSelect('sales.payments', 'payments');
+
+    return querySales.execute();
   }
 
   update(id: string, updateSaleDto: UpdateSaleDto) {
