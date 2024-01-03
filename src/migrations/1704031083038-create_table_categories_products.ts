@@ -6,18 +6,18 @@ export class CreateTableCategoriesProducts1704031083038
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.query(`
         CREATE TABLE categories_product (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(150) UNIQUE NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            admin_id UUID REFERENCES admins(id),
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(150) UNIQUE NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          admin_id UUID REFERENCES admins(id)
         );  
     `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     queryRunner.query(`
-            DROP TABLE categories_product;
-        `);
+      DROP TABLE categories_product;
+    `);
   }
 }

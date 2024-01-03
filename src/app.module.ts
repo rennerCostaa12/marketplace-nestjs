@@ -33,7 +33,6 @@ import { FormDeliveryModule } from './form_delivery/form_delivery.module';
           StatusSalesModule,
           SalesModule,
         ],
-        synchronize: true,
         autoLoadEntities: true,
       }),
       inject: [ConfigService],
