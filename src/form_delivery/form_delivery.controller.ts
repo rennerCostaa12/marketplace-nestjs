@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { FormDeliveryService } from './form_delivery.service';
 import { CreateFormDeliveryDto } from './dto/create-form_delivery.dto';
 import { UpdateFormDeliveryDto } from './dto/update-form_delivery.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('form-delivery')
 export class FormDeliveryController {
   constructor(private readonly formDeliveryService: FormDeliveryService) {}

@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { FormsPaymentsService } from './forms_payments.service';
 import { CreateFormsPaymentDto } from './dto/create-forms_payment.dto';
 import { UpdateFormsPaymentDto } from './dto/update-forms_payment.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('forms-payments')
 export class FormsPaymentsController {
   constructor(private readonly formsPaymentsService: FormsPaymentsService) {}

@@ -3,12 +3,15 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from 'src/admins/dto/create-admin.dto';
+import { LoginClientDto } from './dto/login-client.dto';
+import { SignOutClientDto } from './dto/signout-client.dto';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Admin } from 'src/admins/entities/admin.entity';
 import { Client } from 'src/clients/entities/client.entity';
 import { Repository } from 'typeorm';
-import { LoginClientDto } from './dto/login-client.dto';
+
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +45,7 @@ export class AuthService {
       id: admin.id,
       username: admin.username,
       email: admin.email,
+      profile_img: admin.profile_img,
     };
 
     return {
@@ -50,11 +54,12 @@ export class AuthService {
         subject: String(admin.id),
         audience: 'admin',
       }),
+      user: payload,
     };
   }
 
   async signInClient(loginData: LoginClientDto): Promise<any> {
-    const { phone, password } = loginData;
+    const { phone, password, listDevicesToken } = loginData;
 
     const client = await this.clientService.findOneBy({ phone });
 
@@ -71,6 +76,17 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+
+    const newListDevicesToken = [
+      ...client.listDevicesToken,
+      listDevicesToken[0],
+    ];
+
+    client.listDevicesToken = newListDevicesToken;
+
+    const userCreated = await this.clientService.create(client);
+
+    await this.clientService.save(userCreated);
 
     const payload = {
       id: client.id,
@@ -113,9 +129,29 @@ export class AuthService {
   checkToken(token: string) {
     const datas = this.jwtService.verifyAsync(token, {
       audience: 'admin',
-      secret: 'VBqUX~23c{EW7g}XWxBKj&MKf#}wMbT',
+      secret: jwtConstants.secret,
     });
 
     return datas;
+  }
+
+  async signOut(client: SignOutClientDto) {
+    const { phone, tokenDevice } = client;
+
+    const clientFinded = await this.clientService.findOneBy({ phone });
+
+    const isTokenFinded = clientFinded.listDevicesToken.includes(tokenDevice);
+
+    if (isTokenFinded) {
+      const newListTokenDevices = clientFinded.listDevicesToken.filter(
+        (token) => token !== tokenDevice,
+      );
+
+      clientFinded.listDevicesToken = newListTokenDevices;
+
+      const objectUser = await this.clientService.create(clientFinded);
+
+      return await this.clientService.save(objectUser);
+    }
   }
 }

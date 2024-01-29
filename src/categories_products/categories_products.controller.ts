@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoriesProductsService } from './categories_products.service';
 import { CreateCategoriesProductDto } from './dto/create-categories_product.dto';
 import { UpdateCategoriesProductDto } from './dto/update-categories_product.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('categories-products')
 export class CategoriesProductsController {
   constructor(

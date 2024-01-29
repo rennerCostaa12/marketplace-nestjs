@@ -6,6 +6,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Sale } from './entities/sale.entity';
 
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
+
 @Injectable()
 export class SalesService {
   constructor(
@@ -27,8 +33,58 @@ export class SalesService {
     return this.salesRepository.save(sale);
   }
 
-  findAll() {
-    return this.salesRepository.find();
+  findAllFilter(
+    options: IPaginationOptions,
+    client_id: string,
+    status_sales: string,
+  ): Promise<Pagination<Sale>> {
+    if (client_id.length <= 0 && status_sales.length <= 0) {
+      throw new HttpException(
+        'O código e status da venda não pode ser vazios',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const query = this.salesRepository.createQueryBuilder('sales');
+    query.leftJoin('sales.status', 'status').addSelect(['status.name']);
+    query
+      .leftJoin('sales.client', 'client')
+      .addSelect(['client.username', 'client.id', 'client.listDevicesToken']);
+    query.leftJoin('sales.delivery', 'delivery').addSelect(['delivery.name']);
+    query.orderBy('sales.created_at', 'DESC');
+
+    if (client_id) {
+      query.andWhere('client.id = :id', { id: client_id });
+    }
+
+    if (status_sales) {
+      query.andWhere('status.name = :name', { name: status_sales });
+    }
+
+    query.getMany();
+
+    return paginate(query, options);
+  }
+
+  findAllWithPagination(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Sale>> {
+    const query = this.salesRepository.createQueryBuilder('sales');
+    query.leftJoin('sales.status', 'status').addSelect(['status.name']);
+    query
+      .leftJoin('sales.client', 'client')
+      .addSelect([
+        'client.username',
+        'client.id',
+        'client.listDevicesToken',
+        'client.complement_address',
+        'client.number_address',
+        'client.address',
+      ]);
+    query.leftJoin('sales.delivery', 'delivery').addSelect(['delivery.name']);
+    query.orderBy('sales.created_at', 'DESC');
+
+    return paginate(query, options);
   }
 
   async findByClient(uuid: string) {

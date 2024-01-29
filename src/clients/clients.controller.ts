@@ -24,6 +24,11 @@ export class ClientsController {
     return this.clientsService.create(createClientDto);
   }
 
+  @Get('listClients')
+  findAllWithoutPaginate() {
+    return this.clientsService.findAllWithoutPagination();
+  }
+
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,

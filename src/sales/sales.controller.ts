@@ -7,11 +7,18 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
@@ -21,9 +28,32 @@ export class SalesController {
     return this.salesService.create(createSaleDto);
   }
 
-  @Get()
-  findAll() {
-    return this.salesService.findAll();
+  @Get('findSales')
+  findAll(
+    @Query('client_id', new DefaultValuePipe('')) client_id: string = '',
+    @Query('status_sales', new DefaultValuePipe('')) status_sales: string = '',
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 15,
+  ) {
+    return this.salesService.findAllFilter(
+      {
+        page,
+        limit,
+      },
+      client_id,
+      status_sales,
+    );
+  }
+
+  @Get('findSalesWithPagination')
+  findAllWithPagination(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number = 15,
+  ) {
+    return this.salesService.findAllWithPagination({
+      page,
+      limit,
+    });
   }
 
   @Get('findone/:id')

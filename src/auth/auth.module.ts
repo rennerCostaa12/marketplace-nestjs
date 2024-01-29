@@ -5,13 +5,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from 'src/admins/entities/admin.entity';
 import { Client } from 'src/clients/entities/client.entity';
+import { jwtConstants } from './constants';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Admin, Client]),
     JwtModule.register({
       global: true,
-      secret: 'VBqUX~23c{EW7g}XWxBKj&MKf#}wMbT',
+      secret: jwtConstants.secret,
     }),
   ],
   controllers: [AuthController],

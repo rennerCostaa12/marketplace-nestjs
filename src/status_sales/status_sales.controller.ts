@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { StatusSalesService } from './status_sales.service';
 import { CreateStatusSaleDto } from './dto/create-status_sale.dto';
 import { UpdateStatusSaleDto } from './dto/update-status_sale.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('status-sales')
 export class StatusSalesController {
   constructor(private readonly statusSalesService: StatusSalesService) {}

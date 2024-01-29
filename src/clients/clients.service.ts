@@ -43,6 +43,10 @@ export class ClientsService {
     return this.clientRepository.save(client);
   }
 
+  async findAllWithoutPagination() {
+    return this.clientRepository.find();
+  }
+
   async findAll(options: IPaginationOptions): Promise<Pagination<Client>> {
     const query = this.clientRepository.createQueryBuilder('client');
     query.orderBy('client.username', 'ASC');

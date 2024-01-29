@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginClientDto } from './dto/login-client.dto';
+import { SignOutClientDto } from './dto/signout-client.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,11 @@ export class AuthController {
   @Post('login-client')
   loginClient(@Body() login: LoginClientDto) {
     return this.authService.signInClient(login);
+  }
+
+  @Post('signout-client')
+  signOut(@Body() login: SignOutClientDto) {
+    return this.authService.signOut(login);
   }
 
   @UseGuards(AuthGuard)

@@ -30,6 +30,9 @@ export class Client {
   @Column({ nullable: true })
   complement_address: string;
 
+  @Column({ array: true, type: 'text', default: [] })
+  listDevicesToken: string[];
+
   @OneToMany(() => Sale, (sale) => sale.client)
   shopping: Sale[];
 

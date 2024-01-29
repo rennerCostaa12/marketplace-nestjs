@@ -1,4 +1,10 @@
-import { IsString, MinLength, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  MinLength,
+  IsNotEmpty,
+  IsArray,
+  ArrayMinSize,
+} from 'class-validator';
 
 export class LoginClientDto {
   @IsString({ message: 'O campo telefone é do tipo string' })
@@ -11,4 +17,15 @@ export class LoginClientDto {
     message: 'O campo senha precisa ter no mínimo 7 caracteres',
   })
   password: string;
+
+  @IsNotEmpty({
+    message: 'O campo lista de códigos de dispositivos é obrigatório',
+  })
+  @IsArray({ message: 'O campo lista de códigos de dispositivos é uma array' })
+  @IsString({
+    each: true,
+    message: 'O campo lista de códigos de dispositivos é uma string',
+  })
+  @ArrayMinSize(1, { message: 'Precisa ter pelo menos um valor na lista' })
+  listDevicesToken: string[];
 }
