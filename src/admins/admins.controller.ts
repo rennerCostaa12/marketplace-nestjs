@@ -13,6 +13,7 @@ import {
 import { AdminsService } from './admins.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { ChangePasswordAdminDto } from './dto/change-password-admin.dto';
 
 @Controller('admins')
 export class AdminsController {
@@ -50,5 +51,10 @@ export class AdminsController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.adminsService.remove(id);
+  }
+
+  @Post('change-password')
+  changePassword(@Body() changePasswordAdminDto: ChangePasswordAdminDto) {
+    return this.adminsService.changePassword(changePasswordAdminDto);
   }
 }

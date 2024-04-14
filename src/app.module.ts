@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,9 +13,13 @@ import { StatusSalesModule } from './status_sales/status_sales.module';
 import { AuthModule } from './auth/auth.module';
 import { FormsPaymentsModule } from './forms_payments/forms_payments.module';
 import { FormDeliveryModule } from './form_delivery/form_delivery.module';
+import { EmailModule } from './email/email.module';
+
+import { MailerConfig } from './configs/mailer-module';
 
 @Module({
   imports: [
+    MailerModule.forRoot(MailerConfig),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -46,6 +51,7 @@ import { FormDeliveryModule } from './form_delivery/form_delivery.module';
     AuthModule,
     FormsPaymentsModule,
     FormDeliveryModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

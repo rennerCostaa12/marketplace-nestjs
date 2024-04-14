@@ -11,6 +11,8 @@ import {
   IPaginationOptions,
   paginate,
 } from 'nestjs-typeorm-paginate';
+import { ChangePasswordAdminDto } from './dto/change-password-admin.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AdminsService {
@@ -70,5 +72,43 @@ export class AdminsService {
     }
 
     return this.adminRepository.delete(id);
+  }
+
+  async changePassword(changePassword: ChangePasswordAdminDto) {
+    if (changePassword.password !== changePassword.confirm_password) {
+      throw new HttpException(
+        'As senhas são diferentes',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const resultToken: any = await jwt.verify(
+      changePassword.token,
+      process.env.SECRET_AUTH,
+    );
+
+    if (!resultToken) {
+      throw new HttpException(
+        'Token inválido ou expirado',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const responseAdmin = await this.adminRepository.findOneBy({
+      email: resultToken.email,
+    });
+
+    if (!responseAdmin) {
+      throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const salt = await bcrypt.genSalt();
+
+    responseAdmin.password = await bcrypt.hash(changePassword.password, salt);
+
+    return this.adminRepository.update(responseAdmin.id, {
+      ...responseAdmin,
+      updated_at: new Date(),
+    });
   }
 }
