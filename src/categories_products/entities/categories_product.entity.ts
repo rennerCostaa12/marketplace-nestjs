@@ -26,7 +26,7 @@ export class CategoriesProduct {
     type: 'timestamp without time zone',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  update_at: Date;
+  updated_at: Date;
 
   @ManyToOne(() => Admin, (admin) => admin.categories_products)
   admin: Admin;

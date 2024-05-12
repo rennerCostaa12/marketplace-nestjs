@@ -1,27 +1,73 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateTableClients1704030753829 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.query(`
-      CREATE TABLE clients (
-        id UUID PRIMARY KEY,
-        username VARCHAR(150) NOT NULL,
-        email VARCHAR(255) UNIQUE,
-        phone VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        profile_img VARCHAR(255),
-        address VARCHAR(255) NOT NULL,
-        number_address INT NOT NULL,
-        complement_address VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );  
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: 'clients',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            default: 'uuid_generate_v4()',
+          },
+          { name: 'username', type: 'varchar', length: '150' },
+          {
+            name: 'email',
+            type: 'varchar',
+            isNullable: false,
+            isUnique: true,
+          },
+          {
+            name: 'phone',
+            type: 'varchar',
+            isUnique: true,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+          },
+          {
+            name: 'profile_img',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'address',
+            type: 'varchar',
+          },
+          {
+            name: 'number_address',
+            type: 'integer',
+          },
+          {
+            name: 'complement_address',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'listDevicesToken',
+            type: 'text',
+            isArray: true,
+            default: 'ARRAY[]::text[]',
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+        ],
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.query(`
-      DROP TABLE clients;
-    `);
+    await queryRunner.dropTable('clients');
   }
 }

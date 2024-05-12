@@ -18,7 +18,7 @@ export class Admin {
   password: string;
 
   @Column({ nullable: true })
-  profile_img: string;
+  profile_img: string | null;
 
   @Column({
     type: 'timestamp without time zone',

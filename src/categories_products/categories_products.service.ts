@@ -80,7 +80,7 @@ export class CategoriesProductsService {
 
     return this.categoriesProductRepository.update(id, {
       ...updateCategoriesProductDto,
-      update_at: new Date(),
+      updated_at: new Date(),
     });
   }
 

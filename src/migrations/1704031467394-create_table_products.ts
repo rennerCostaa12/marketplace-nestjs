@@ -1,26 +1,54 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateTableProducts1704031467394 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.query(`
-      CREATE TABLE products (
-        id UUID PRIMARY KEY,
-        name VARCHAR(150) NOT NULL,
-        price DOUBLE PRECISION NOT NULL,
-        stock INTEGER NOT NULL,
-        img_product VARCHAR(255) NOT NULL,
-        unavailable BOOLEAN NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        category_id INT REFERENCES categories_product(id),
-        admin_id UUID REFERENCES admins(id)
-      );  
-    `);
+    await queryRunner.createTable(
+      new Table({
+        name: 'products',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            default: 'uuid_generate_v4()',
+          },
+          { name: 'name', type: 'varchar', length: '150' },
+          { name: 'price', type: 'double precision' },
+          { name: 'stock', type: 'integer' },
+          { name: 'img_product', type: 'varchar' },
+          { name: 'unavailable', type: 'boolean' },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          { name: 'categoriesId', type: 'int' },
+          { name: 'adminId', type: 'uuid' },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ['categoriesId'],
+            referencedTableName: 'categories_product',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+          },
+          {
+            columnNames: ['adminId'],
+            referencedTableName: 'admins',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+          },
+        ],
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.query(`
-      DROP TABLE products;
-    `);
+    await queryRunner.dropTable('products');
   }
 }
