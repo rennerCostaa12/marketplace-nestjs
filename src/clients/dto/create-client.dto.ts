@@ -17,7 +17,7 @@ export class CreateClientDto {
   username: string;
 
   @IsEmail()
-  @IsOptional()
+  @IsNotEmpty({ message: 'O campo email é obrigatório' })
   email: string;
 
   @IsString({ message: 'O campo telefone é do tipo string' })

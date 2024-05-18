@@ -94,8 +94,9 @@ export class AuthService {
       phone: client.phone,
       profile_img: client.profile_img,
       address: client.address,
-      complement: client.complement_address,
+      complement_address: client.complement_address,
       number_address: client.number_address,
+      email: client.email
     };
 
     const objectUser = {
