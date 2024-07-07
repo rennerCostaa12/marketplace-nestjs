@@ -53,11 +53,11 @@ export class SalesService {
     query.leftJoin('sales.delivery', 'delivery').addSelect(['delivery.name']);
     query.orderBy('sales.created_at', 'DESC');
 
-    if (client_id) {
+    if (client_id.length > 0) {
       query.andWhere('client.id = :id', { id: client_id });
     }
 
-    if (status_sales) {
+    if (status_sales.length > 0) {
       query.andWhere('status.name = :name', { name: status_sales });
     }
 
