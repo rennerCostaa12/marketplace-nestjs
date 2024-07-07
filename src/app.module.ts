@@ -30,6 +30,10 @@ import { MailerConfig } from './configs/mailer-module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
+        url: configService.get('DB_URL'),
+        ssl: {
+          rejectUnauthorized: configService.get('DB_SSL')
+        },
         entities: [
           ProductsModule,
           CategoriesProductsModule,
@@ -38,7 +42,7 @@ import { MailerConfig } from './configs/mailer-module';
           StatusSalesModule,
           SalesModule,
         ],
-        autoLoadEntities: true,
+        autoLoadEntities: true
       }),
       inject: [ConfigService],
     }),
